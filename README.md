@@ -21,8 +21,7 @@ This project is an AI-powered eye stress detection system that monitors eye move
 
 1. Clone the repository:
 ```bash
-git clone [<repository-url>](https://github.com/CluelessMe/eye_stress_detection1.git)
-cd perp
+git clone https://github.com/CluelessMe/eye_stress_detection1.git
 ```
 
 2. Create a virtual environment (recommended):
@@ -125,5 +124,6 @@ perp/
 - Take regular breaks to prevent eye strain
 - Keep a proper distance from the screen (50-70 cm)
 - Ensure stable head position during monitoring
+
 
 
