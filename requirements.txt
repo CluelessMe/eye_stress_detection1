@@ -1,0 +1,7 @@
+streamlit==1.31.1
+opencv-python==4.9.0.80
+mediapipe==0.10.9
+imutils==0.5.4
+numpy==1.26.4
+uuid==1.30
+dlib==19.24.2

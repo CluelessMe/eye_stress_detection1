@@ -1,0 +1,14 @@
+Virtual Environment:
+
+python -m venv eyes
+.\eyes\Scripts\activate
+rmdir /s /q tf_venv
+
+
+python webstreaming.py
+uvicorn blink_api_stream:app --host 127.0.0.1 --port 8000
+
+npm start
+
+
+streamlit run app.py
