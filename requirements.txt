@@ -4,4 +4,5 @@ mediapipe==0.10.9
 imutils==0.5.4
 numpy==1.26.4
 uuid==1.30
-dlib==19.24.2
+
+
