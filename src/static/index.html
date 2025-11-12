@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Eye Stress Detector</title>
+<style>
+:root {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --accent-primary: #3b82f6;
+  --accent-secondary: #2563eb;
+  --accent-success: #10b981;
+  --accent-warning: #f59e0b;
+  --accent-danger: #ef4444;
+  --accent-purple: #8b5cf6;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-color: #475569;
+  --border-radius: 16px;
+  --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  --glow-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --gradient-primary: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  --gradient-secondary: linear-gradient(135deg, #1e293b, #334155);
+}
+
+[data-theme="light"] {
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f1f5f9;
+  --accent-primary: #3b82f6;
+  --accent-secondary: #2563eb;
+  --accent-success: #10b981;
+  --accent-warning: #f59e0b;
+  --accent-danger: #ef4444;
+  --accent-purple: #8b5cf6;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+  --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --glow-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+  --gradient-secondary: linear-gradient(135deg, #ffffff, #f1f5f9);
+}
+
+body { 
+  background: var(--bg-primary); 
+  color: var(--text-primary); 
+  margin: 0; 
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; 
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.wrapper { 
+  height: 100vh; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 16px;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.top { 
+  flex: 1; 
+  display: flex; 
+  gap: 16px; 
+  min-height: 0;
+}
+
+.panel { 
+  background: var(--bg-secondary); 
+  border: 1px solid var(--border-color); 
+  border-radius: var(--border-radius); 
+  padding: 20px;
+  overflow: auto;
+  box-shadow: var(--card-shadow);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gradient-primary);
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.panel:hover {
+  box-shadow: var(--card-shadow), var(--glow-shadow);
+  transform: translateY(-2px);
+}
+
+#terminal { 
+  flex: 1.2; 
+}
+
+#camera-area { 
+  flex: 2; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 16px; 
+}
+
+#canvas-box { 
+  flex: 3; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-primary);
+}
+
+#canvas-box::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: var(--border-radius);
+  box-shadow: inset 0 0 0 1px var(--border-color);
+  pointer-events: none;
+}
+
+#metrics-box { 
+  flex: 1; 
+}
+
+#ai-box { 
+  flex: 1.2; 
+}
+
+.bottom { 
+  height: 100px; 
+  display: flex; 
+  gap: 16px; 
+}
+
+.card { 
+  flex: 1; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  background: var(--gradient-secondary); 
+  border: 1px solid var(--border-color); 
+  border-radius: var(--border-radius); 
+  font-size: 20px; 
+  text-align: center; 
+  line-height: 1.2;
+  box-shadow: var(--card-shadow);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-primary);
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--card-shadow), 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card b { 
+  display: block; 
+  margin-bottom: 6px; 
+  font-size: 12px; 
+  color: var(--text-secondary);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+#control { 
+  flex: 1; 
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+#control::before {
+  display: none;
+}
+
+.control-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  height: 100%;
+}
+
+.status-indicator {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+  animation: pulse 2s infinite;
+  border: 3px solid var(--bg-secondary);
+}
+
+.status-indicator::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  background: white;
+  border-radius: 50%;
+  animation: blink 1.5s infinite;
+}
+
+.theme-toggle {
+  flex: 1;
+  height: 60px;
+  background: var(--gradient-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 0 20px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.theme-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow);
+}
+
+.theme-icon {
+  font-size: 20px;
+  transition: var(--transition);
+}
+
+button { 
+  width: 100%; 
+  height: 100%; 
+  font-size: 16px; 
+  background: var(--gradient-primary); 
+  border: none; 
+  color: #fff; 
+  border-radius: var(--border-radius); 
+  cursor: pointer; 
+  font-weight: 600;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.7s;
+}
+
+button:hover { 
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+}
+
+button:hover::after {
+  left: 100%;
+}
+
+button:disabled {
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+button:disabled:hover::after {
+  left: -100%;
+}
+
+pre { 
+  margin: 0; 
+  white-space: pre-wrap; 
+  font-family: 'JetBrains Mono', 'Fira Code', monospace; 
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  flex: 1;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  border-radius: 12px;
+  overflow: auto;
+  border: 1px solid var(--border-color);
+}
+
+h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+h3::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--gradient-primary);
+  border-radius: 50%;
+  margin-right: 0;
+}
+
+#canvas-box h3 {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 10;
+  margin: 0;
+  background: var(--bg-secondary);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+#metrics-box p, #ai-box p {
+  margin: 8px 0;
+  padding: 12px 16px;
+  background: var(--bg-tertiary);
+  border-radius: 12px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  transition: var(--transition);
+  border: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#metrics-box p:hover, #ai-box p:hover {
+  background: var(--bg-secondary);
+  transform: translateX(4px);
+}
+
+#metrics-box p strong, #ai-box p strong {
+  color: var(--text-primary);
+  font-weight: 600;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+#cam {
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  max-width: 100%;
+  max-height: 100%;
+  border: 1px solid var(--border-color);
+}
+
+#stream {
+  display: none;
+}
+
+/* Status indicator colors */
+#blink::before { background: var(--accent-success); }
+#ear::before { background: var(--accent-warning); }
+#stress::before { background: var(--accent-danger); }
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-secondary);
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Theme toggle transition */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <div class="top">
+    <div id="terminal" class="panel">
+      <h3>📟 Terminal Feed</h3>
+      <pre id="log">waiting...</pre>
+    </div>
+
+    <div id="camera-area">
+      <div id="canvas-box" class="panel">
+        <h3>📷 Camera Feed</h3>
+        <canvas id="cam" width="960" height="540"></canvas>
+        <img id="stream" src="/video_feed" style="display:none;">
+      </div>
+
+      <div id="metrics-box" class="panel">
+        <h3>📊 Final Metrics</h3>
+        <p id="m-blinks"><span>Total Blinks:</span> <strong>--</strong></p>
+        <p id="m-ear"><span>Average EAR:</span> <strong>--</strong></p>
+        <p id="m-stress"><span>Stress Level:</span> <strong>--</strong></p>
+      </div>
+    </div>
+
+    <div id="ai-box" class="panel">
+      <h3>🤖 AI Suggestions</h3>
+      <p id="suggest">waiting...</p>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div id="blink" class="card"><div><b>👁️ Blinks</b><span id="blink-val">--</span></div></div>
+    <div id="ear" class="card"><div><b>📏 EAR</b><span id="ear-val">--</span></div></div>
+    <div id="stress" class="card"><div><b>💓 Stress</b><span id="stress-val">--</span></div></div>
+    <div id="control" class="card">
+      <div class="control-container">
+        <div class="status-indicator" title="Session Running"></div>
+        <div class="theme-toggle" id="themeToggle">
+          <span class="theme-icon">🌙</span>
+          <span>Dark Mode</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// --- Canvas + Stream Setup ---
+const cam = document.getElementById("cam");
+const ctx = cam.getContext("2d");
+const stream = document.getElementById("stream");
+
+// Ensure canvas continuously draws from the hidden <img> stream
+function drawLoop() {
+  try {
+    ctx.drawImage(stream, 0, 0, cam.width, cam.height);
+  } catch (e) {}
+  requestAnimationFrame(drawLoop);
+}
+stream.onload = drawLoop;
+
+// --- AI Suggestion Logic ---
+function suggestion(stress, blinks){
+  if (stress === "High") return "High stress detected. Close your eyes for 10 seconds or blink slowly 10 times.";
+  if (stress === "Moderate") return "Moderate stress. Blink regularly and relax your gaze.";
+  if (blinks < 5) return "Low blink rate. Try intentional blinking.";
+  return "Stable. Maintain natural blinking.";
+}
+
+// --- Poll Metrics ---
+async function update(){
+  const res = await fetch("/metrics", {cache:"no-store"});
+  const d = await res.json();
+
+  document.getElementById("blink-val").textContent = d.blinks;
+  document.getElementById("ear-val").textContent   = d.ear.toFixed(3);
+  document.getElementById("stress-val").textContent= d.stress;
+
+  document.getElementById("m-blinks").textContent = "Total Blinks: " + d.blinks;
+  document.getElementById("m-ear").textContent    = "Average EAR: " + d.ear.toFixed(3);
+  document.getElementById("m-stress").textContent = "Stress Level: " + d.stress;
+
+  document.getElementById("log").textContent = d.logs.join("\n");
+  document.getElementById("suggest").textContent = suggestion(d.stress, d.blinks);
+}
+setInterval(update, 800);
+
+// --- Theme Toggle ---
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = themeToggle.querySelector('.theme-icon');
+const themeText = themeToggle.querySelector('span:last-child');
+
+let isDark = true;
+
+themeToggle.addEventListener('click', () => {
+  isDark = !isDark;
+  document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  themeIcon.textContent = isDark ? '🌙' : '☀️';
+  themeText.textContent = isDark ? 'Dark Mode' : 'Light Mode';
+});
+</script>
+
+</body>
+</html>
