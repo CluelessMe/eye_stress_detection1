@@ -60,28 +60,6 @@ cd src
 python app2.py
 ```
 
-3. The application will open in your default web browser. Click the "Turn Camera On" toggle to begin.
-
-## How to Use
-
-1. **Starting a Session**
-   - Toggle the camera on
-   - Keep your eyes open for initial calibration
-   - Maintain a stable position facing the camera
-
-2. **During the Session**
-   - Monitor the live feed with eye tracking
-   - Check the log panel for real-time events
-   - Watch the session progress in the analysis panel
-
-3. **Ending a Session**
-   - Toggle the camera off
-   - View your final metrics:
-     - Total Blinks
-     - Average EAR (Eye Aspect Ratio)
-     - Stress Level
-     - Confidence Score
-
 ## Project Structure
 
 ```
@@ -128,6 +106,7 @@ perp/
 - Take regular breaks to prevent eye strain
 - Keep a proper distance from the screen (50-70 cm)
 - Ensure stable head position during monitoring
+
 
 
 
