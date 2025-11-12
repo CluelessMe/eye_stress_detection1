@@ -53,7 +53,11 @@ source eyes/bin/activate
 
 2. Run the application:
 ```bash
-streamlit run src/app.py
+cd src
+```
+
+```bash
+python app2.py
 ```
 
 3. The application will open in your default web browser. Click the "Turn Camera On" toggle to begin.
@@ -124,6 +128,7 @@ perp/
 - Take regular breaks to prevent eye strain
 - Keep a proper distance from the screen (50-70 cm)
 - Ensure stable head position during monitoring
+
 
 
 
