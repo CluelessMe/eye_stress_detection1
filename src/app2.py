@@ -126,7 +126,7 @@ threading.Thread(target=camera_loop, daemon=True).start()
 # =========================
 @app.route("/")
 def index():
-    return app.send_static_file("index.html")
+    return app.send_static_file("index1.html")
 
 
 # =========================
@@ -160,3 +160,4 @@ def metrics():
 
 if __name__ == "__main__":
     app.run(debug=False, host="127.0.0.1", port=5000)
+
