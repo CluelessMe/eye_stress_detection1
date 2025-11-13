@@ -520,15 +520,7 @@ async function update(){
   document.getElementById("m-stress").textContent = "Stress Level: " + d.stress;
 
   document.getElementById("log").textContent = d.logs.join("\n");
-  const aiText =
-    d.suggestion && d.suggestion.trim() !== ""
-      ? d.suggestion
-      : "";
-  const ruleText = suggestion(d.stress, d.blinks);
-
-  document.getElementById("suggest").innerHTML = `${aiText}<br><br><br>${ruleText}`;
-
-
+  document.getElementById("suggest").textContent = suggestion(d.stress, d.blinks);
 }
 setInterval(update, 800);
 
