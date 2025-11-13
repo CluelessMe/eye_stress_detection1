@@ -51,7 +51,7 @@ eyes\Scripts\activate
 source eyes/bin/activate
 ```
 
-2. Run the application:
+2. Run the application: (without ai)
 ```bash
 cd src
 ```
@@ -60,14 +60,14 @@ cd src
 python app2.py
 ```
 
-```bash -with ai
-python app3.py
+2. Run the application: (with ai)
+```bash
+cd src
 ```
 
-Note: 
-app2.py runs with index1.html
-app3.py runs with index.html
-
+```bash - without ai
+python app3.py
+```
 
 ## Project Structure
 
@@ -115,6 +115,7 @@ perp/
 - Take regular breaks to prevent eye strain
 - Keep a proper distance from the screen (50-70 cm)
 - Ensure stable head position during monitoring
+
 
 
 
