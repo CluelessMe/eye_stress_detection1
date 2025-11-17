@@ -68,10 +68,14 @@ cd src
 ```bash - without ai
 python app3.py
 ```
+If sometimes it doesnt work then run these:
+```bash
+pip uninstall mediapipe -y
+pip install mediapipe==0.10.9
+```
 
 ## Project Structure
 
-```
 perp/
 ├── src/
 │   ├── app.py              # Main application
@@ -115,6 +119,7 @@ perp/
 - Take regular breaks to prevent eye strain
 - Keep a proper distance from the screen (50-70 cm)
 - Ensure stable head position during monitoring
+
 
 
 
